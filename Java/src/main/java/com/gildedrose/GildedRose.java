@@ -19,9 +19,8 @@ class GildedRose {
 
     private void updateItemQuality(Item item) {
         boolean isExpired = item.sellIn < 0;
-        int degradeValue = item.name.equals(CONJURED) ? -2 : -1;
+        int degradeValue = getDegradeValue(item, isExpired);
         boolean doesDegrade = !item.name.equals(AGED_BRIE) && !item.name.equals(BACKSTAGE) && !item.name.equals(SULFURAS_HAND_OF_RAGNAROS);
-
 
         if (doesDegrade) {
             setQuality(item, degradeValue);
@@ -41,6 +40,11 @@ class GildedRose {
         }
     }
 
+    private static int getDegradeValue(Item item, boolean isExpired) {
+        int degradeValue = item.name.equals(CONJURED) ? -2 : -1;
+        return isExpired ? 2 * degradeValue : degradeValue;
+    }
+
     private static void handleBackstageQuality(Item item) {
         if (item.sellIn < 11) {
             setQuality(item, 1);
@@ -51,9 +55,6 @@ class GildedRose {
     }
 
     private static void setExpired(Item item, int degradeValue, boolean doesDegrade) {
-        if (doesDegrade) {
-            setQuality(item, degradeValue);
-        }
         if (item.name.equals(AGED_BRIE)) {
             setQuality(item, 1);
         } else if (item.name.equals(BACKSTAGE)) {
