@@ -19,10 +19,10 @@ class GildedRose {
 
     private void updateItemQuality(Item item) {
         int degradeValue = item.name.equals(CONJURED) ? -2 : -1;
-        if (!item.name.equals(AGED_BRIE) && !item.name.equals(BACKSTAGE)) {
-            if (!item.name.equals(SULFURAS_HAND_OF_RAGNAROS)) {
-                setQuality(item, degradeValue);
-            }
+        boolean doesDegrade = !item.name.equals(AGED_BRIE) && !item.name.equals(BACKSTAGE) && !item.name.equals(SULFURAS_HAND_OF_RAGNAROS);
+
+        if (doesDegrade) {
+            setQuality(item, degradeValue);
         } else {
             setQuality(item, 1);
             if (item.name.equals(BACKSTAGE)) {
@@ -40,16 +40,13 @@ class GildedRose {
         }
 
         if (item.sellIn < 0) {
-            if (!item.name.equals(AGED_BRIE)) {
-                if (!item.name.equals(BACKSTAGE)) {
-                    if (!item.name.equals(SULFURAS_HAND_OF_RAGNAROS)) {
-                        setQuality(item, degradeValue);
-                    }
-                } else {
-                    item.quality = item.quality - item.quality;
-                }
-            } else {
+            if (doesDegrade) {
+                setQuality(item, degradeValue);
+            }
+            if (item.name.equals(AGED_BRIE)) {
                 setQuality(item, 1);
+            } else if (item.name.equals(BACKSTAGE)) {
+                item.quality = item.quality - item.quality;
             }
         }
     }
