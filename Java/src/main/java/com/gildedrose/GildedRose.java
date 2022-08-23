@@ -24,11 +24,12 @@ class GildedRose {
 
         if (doesDegrade) {
             setQuality(item, degradeValue);
-        } else {
+        }
+        if (item.name.equals(AGED_BRIE)) {
             setQuality(item, 1);
-            if (item.name.equals(BACKSTAGE)) {
-                handleBackstageQuality(item);
-            }
+        }
+        if (item.name.equals(BACKSTAGE)) {
+            handleBackstageQuality(item);
         }
 
         if (!item.name.equals(SULFURAS_HAND_OF_RAGNAROS)) {
@@ -36,7 +37,7 @@ class GildedRose {
         }
 
         if (isExpired) {
-            setExpired(item, degradeValue, doesDegrade);
+            setExpired(item);
         }
     }
 
@@ -46,6 +47,7 @@ class GildedRose {
     }
 
     private static void handleBackstageQuality(Item item) {
+        setQuality(item, 1);
         if (item.sellIn < 11) {
             setQuality(item, 1);
         }
@@ -54,7 +56,7 @@ class GildedRose {
         }
     }
 
-    private static void setExpired(Item item, int degradeValue, boolean doesDegrade) {
+    private static void setExpired(Item item) {
         if (item.name.equals(AGED_BRIE)) {
             setQuality(item, 1);
         } else if (item.name.equals(BACKSTAGE)) {
