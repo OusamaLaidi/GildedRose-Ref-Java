@@ -1,6 +1,10 @@
 package com.gildedrose;
 
 class GildedRose {
+    public static final String AGED_BRIE = "Aged Brie";
+    public static final String SULFURAS_HAND_OF_RAGNAROS = "Sulfuras, Hand of Ragnaros";
+    public static final String BACKSTAGE = "Backstage passes to a TAFKAL80ETC concert";
+    public static final String CONJURED = "Conjured Mana Cake";
     Item[] items;
 
     public GildedRose(Item[] items) {
@@ -8,55 +12,63 @@ class GildedRose {
     }
 
     public void updateQuality() {
-        for (int i = 0; i < items.length; i++) {
-            if (!items[i].name.equals("Aged Brie")
-                    && !items[i].name.equals("Backstage passes to a TAFKAL80ETC concert")) {
-                if (items[i].quality > 0) {
-                    if (!items[i].name.equals("Sulfuras, Hand of Ragnaros")) {
-                        items[i].quality = items[i].quality - 1;
-                    }
-                }
-            } else {
-                if (items[i].quality < 50) {
-                    items[i].quality = items[i].quality + 1;
+        for (Item item : items) {
+            updateItemQuality(item);
+        }
+    }
 
-                    if (items[i].name.equals("Backstage passes to a TAFKAL80ETC concert")) {
-                        if (items[i].sellIn < 11) {
-                            if (items[i].quality < 50) {
-                                items[i].quality = items[i].quality + 1;
-                            }
-                        }
+    private void updateItemQuality(Item item) {
+        boolean isExpired = item.sellIn < 0;
+        int degradeValue = getDegradeValue(item, isExpired);
+        boolean doesDegrade = !item.name.equals(AGED_BRIE) && !item.name.equals(BACKSTAGE) && !item.name.equals(SULFURAS_HAND_OF_RAGNAROS);
 
-                        if (items[i].sellIn < 6) {
-                            if (items[i].quality < 50) {
-                                items[i].quality = items[i].quality + 1;
-                            }
-                        }
-                    }
-                }
-            }
+        if (doesDegrade) {
+            setQuality(item, degradeValue);
+        }
+        if (item.name.equals(AGED_BRIE)) {
+            setQuality(item, 1);
+        }
+        if (item.name.equals(BACKSTAGE)) {
+            handleBackstageQuality(item);
+        }
 
-            if (!items[i].name.equals("Sulfuras, Hand of Ragnaros")) {
-                items[i].sellIn = items[i].sellIn - 1;
-            }
+        if (!item.name.equals(SULFURAS_HAND_OF_RAGNAROS)) {
+            item.sellIn = item.sellIn - 1;
+        }
 
-            if (items[i].sellIn < 0) {
-                if (!items[i].name.equals("Aged Brie")) {
-                    if (!items[i].name.equals("Backstage passes to a TAFKAL80ETC concert")) {
-                        if (items[i].quality > 0) {
-                            if (!items[i].name.equals("Sulfuras, Hand of Ragnaros")) {
-                                items[i].quality = items[i].quality - 1;
-                            }
-                        }
-                    } else {
-                        items[i].quality = items[i].quality - items[i].quality;
-                    }
-                } else {
-                    if (items[i].quality < 50) {
-                        items[i].quality = items[i].quality + 1;
-                    }
-                }
-            }
+        if (isExpired) {
+            setExpired(item);
+        }
+    }
+
+    private static int getDegradeValue(Item item, boolean isExpired) {
+        int degradeValue = item.name.equals(CONJURED) ? -2 : -1;
+        return isExpired ? 2 * degradeValue : degradeValue;
+    }
+
+    private static void handleBackstageQuality(Item item) {
+        setQuality(item, 1);
+        if (item.sellIn < 11) {
+            setQuality(item, 1);
+        }
+        if (item.sellIn < 6) {
+            setQuality(item, 1);
+        }
+    }
+
+    private static void setExpired(Item item) {
+        if (item.name.equals(AGED_BRIE)) {
+            setQuality(item, 1);
+        } else if (item.name.equals(BACKSTAGE)) {
+            item.quality = item.quality - item.quality;
+        }
+    }
+
+    private static void setQuality(Item item, int qualityChange) {
+        int newQuality = item.quality + qualityChange;
+        if (newQuality <= 50 && newQuality >= 0) {
+            item.quality = newQuality;
         }
     }
 }
+
