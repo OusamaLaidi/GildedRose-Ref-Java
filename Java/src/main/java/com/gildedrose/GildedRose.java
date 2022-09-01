@@ -70,5 +70,9 @@ class GildedRose {
             item.quality = newQuality;
         }
     }
+
+    public Item[] getItems() {
+        return items;
+    }
 }
 
