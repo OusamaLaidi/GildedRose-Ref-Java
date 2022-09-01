@@ -18,7 +18,7 @@ class GildedRose {
     }
 
     private void updateItemQuality(Item item) {
-        boolean isExpired = item.sellIn < 0;
+        boolean isExpired = item.sellIn <= 0;
         int degradeValue = getDegradeValue(item, isExpired);
         boolean doesDegrade = !item.name.equals(AGED_BRIE) && !item.name.equals(BACKSTAGE) && !item.name.equals(SULFURAS_HAND_OF_RAGNAROS);
 
